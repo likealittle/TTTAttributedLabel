@@ -239,6 +239,7 @@ static inline NSAttributedString * NSAttributedStringBySettingColorFromContext(N
     self.userInteractionEnabled = YES;
     self.multipleTouchEnabled = NO;
         
+    self.dataDetectorTypes = NSTextCheckingTypeLink;
     self.textInsets = UIEdgeInsetsZero;
     
     self.links = [NSArray array];
@@ -852,6 +853,17 @@ afterInheritingLabelAttributesAndConfiguringWithBlock:(NSMutableAttributedString
     }
 }
 
+- (void)setTextAlignment:(NSTextAlignment)textAlignment
+{
+    [super setTextAlignment:textAlignment];
+    
+    NSMutableParagraphStyle *paragraphStyle = self.linkAttributes[(NSString *)kCTParagraphStyleAttributeName];
+    paragraphStyle.alignment = textAlignment;
+    
+    paragraphStyle = self.activeLinkAttributes[(NSString *)kCTParagraphStyleAttributeName];
+    paragraphStyle.alignment = textAlignment;
+}
+
 - (CGRect)textRectForBounds:(CGRect)bounds
      limitedToNumberOfLines:(NSInteger)numberOfLines
 {
@@ -1000,6 +1012,31 @@ afterInheritingLabelAttributesAndConfiguringWithBlock:(NSMutableAttributedString
 }
 
 #pragma mark - UIResponder
+
+-(UIView *)hitTest:(CGPoint)point withEvent:(UIEvent *)event
+{
+	// never return self. always return the result of [super hitTest..].
+	// this takes userInteraction state, enabled, alpha values etc. into account
+	UIView *hitResult = [super hitTest:point withEvent:event];
+	
+	// don't check for links if the event was handled by one of the subviews
+	if (hitResult != self)
+    {
+		return hitResult;
+	}
+	
+	if (self.onlyCatchTouchesOnLinks)
+    {
+		BOOL didHitLink = ([self linkAtPoint:point] != nil);
+		if (!didHitLink)
+        {
+			// not catch the touch if it didn't hit a link
+			return nil;
+		}
+	}
+	return hitResult;
+}
+
 
 - (void)touchesBegan:(NSSet *)touches
            withEvent:(UIEvent *)event

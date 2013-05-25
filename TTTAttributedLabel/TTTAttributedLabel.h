@@ -129,6 +129,8 @@ extern NSString * const kTTTBackgroundCornerRadiusAttributeName;
  */
 @property (nonatomic, strong) NSDictionary *activeLinkAttributes;
 
+@property (nonatomic) BOOL onlyCatchTouchesOnLinks;
+
 ///---------------------------------------
 /// @name Acccessing Text Style Attributes
 ///---------------------------------------
