@@ -855,13 +855,37 @@ afterInheritingLabelAttributesAndConfiguringWithBlock:(NSMutableAttributedString
 
 - (void)setTextAlignment:(NSTextAlignment)textAlignment
 {
+    if( self.textAlignment == textAlignment )
+        return;
+    
     [super setTextAlignment:textAlignment];
     
-    NSMutableParagraphStyle *paragraphStyle = self.linkAttributes[(NSString *)kCTParagraphStyleAttributeName];
-    paragraphStyle.alignment = textAlignment;
-    
-    paragraphStyle = self.activeLinkAttributes[(NSString *)kCTParagraphStyleAttributeName];
-    paragraphStyle.alignment = textAlignment;
+    if ([NSMutableParagraphStyle class]) {
+        NSMutableParagraphStyle *paragraphStyle = self.linkAttributes[(NSString *)kCTParagraphStyleAttributeName];
+        paragraphStyle.alignment = textAlignment;
+        
+        paragraphStyle = self.activeLinkAttributes[(NSString *)kCTParagraphStyleAttributeName];
+        paragraphStyle.alignment = textAlignment;
+    } else {
+        NSMutableDictionary *mutableLinkAttributes = [self.linkAttributes mutableCopy];
+        NSMutableDictionary *mutableActiveLinkAttributes = [self.activeLinkAttributes mutableCopy];
+        
+        CTLineBreakMode lineBreakMode = CTLineBreakModeFromUILineBreakMode(self.lineBreakMode);
+        CTTextAlignment ctTextAlignment = CTTextAlignmentFromUITextAlignment(textAlignment);
+        CTParagraphStyleSetting paragraphStyles[2] = {
+            {.spec = kCTParagraphStyleSpecifierLineBreakMode, .valueSize = sizeof(CTLineBreakMode), .value = (const void *)&lineBreakMode},
+            {.spec = kCTParagraphStyleSpecifierAlignment, .valueSize = sizeof(CTTextAlignment), .value = (const void *)&ctTextAlignment}
+        };
+        CTParagraphStyleRef paragraphStyle = CTParagraphStyleCreate(paragraphStyles, 2);
+        
+        [mutableLinkAttributes setObject:(__bridge id)paragraphStyle forKey:(NSString *)kCTParagraphStyleAttributeName];
+        [mutableActiveLinkAttributes setObject:(__bridge id)paragraphStyle forKey:(NSString *)kCTParagraphStyleAttributeName];
+        
+        CFRelease(paragraphStyle);
+        
+        self.linkAttributes = mutableLinkAttributes;
+        self.activeLinkAttributes = mutableActiveLinkAttributes;
+    }
 }
 
 - (CGRect)textRectForBounds:(CGRect)bounds
