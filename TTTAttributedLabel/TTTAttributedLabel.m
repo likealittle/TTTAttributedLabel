@@ -22,6 +22,9 @@
 
 #import "TTTAttributedLabel.h"
 
+#import "TFHpple.h"
+#import "NSString+HTML.h"
+
 #define kTTTLineBreakWordWrapTextWidthScalingFactor (M_PI / M_E)
 
 #pragma clang diagnostic push
@@ -178,6 +181,8 @@ static inline NSAttributedString * NSAttributedStringBySettingColorFromContext(N
 @property (readwrite, nonatomic, strong) NSArray *links;
 @property (readwrite, nonatomic, strong) NSTextCheckingResult *activeLink;
 
+@property (nonatomic, strong) NSArray *anchorTagElements;
+
 - (void)commonInit;
 - (void)setNeedsFramesetter;
 - (void)addLinksWithTextCheckingResults:(NSArray *)results
@@ -243,6 +248,7 @@ static inline NSAttributedString * NSAttributedStringBySettingColorFromContext(N
     self.textInsets = UIEdgeInsetsZero;
     
     self.links = [NSArray array];
+    self.anchorTagElements = [NSArray array];
 
     NSMutableDictionary *mutableLinkAttributes = [NSMutableDictionary dictionary];
     [mutableLinkAttributes setObject:[NSNumber numberWithBool:YES] forKey:(NSString *)kCTUnderlineStyleAttributeName];
@@ -772,6 +778,14 @@ static inline NSAttributedString * NSAttributedStringBySettingColorFromContext(N
     self.links = [NSArray array];
     if (self.attributedText && self.dataDetectorTypes) {
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            for( TFHppleElement *element in self.anchorTagElements ) {
+                NSRange range = [[text string] rangeOfString:[element content]];
+                if( range.location != NSNotFound ) {
+                    [self addLinkToURL:[NSURL URLWithString:element.attributes[@"href"]] withRange:range];
+                }
+            }
+        });
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             NSArray *results = [self.dataDetector matchesInString:[text string] options:0 range:NSMakeRange(0, [text length])];
             if ([results count] > 0) {
                 dispatch_async(dispatch_get_main_queue(), ^{
@@ -782,7 +796,7 @@ static inline NSAttributedString * NSAttributedStringBySettingColorFromContext(N
             }
         });
     }
-        
+    
     [super setText:[self.attributedText string]];
 }
 
@@ -791,6 +805,12 @@ afterInheritingLabelAttributesAndConfiguringWithBlock:(NSMutableAttributedString
 {
     NSMutableAttributedString *mutableAttributedString = nil;
     if ([text isKindOfClass:[NSString class]]) {
+        // Remove all anchor tags and enqueue them for attribution later
+        NSString *string = text;
+        TFHpple *parser = [TFHpple hppleWithHTMLData:[string dataUsingEncoding:NSUTF8StringEncoding]];
+        self.anchorTagElements = [parser searchWithXPathQuery:@"//a"];
+        text = [NSString stringByStrippingHTML:text];
+        
         mutableAttributedString = [[NSMutableAttributedString alloc] initWithString:text attributes:NSAttributedStringAttributesFromLabel(self)];
     } else {
         mutableAttributedString = [[NSMutableAttributedString alloc] initWithAttributedString:text];
