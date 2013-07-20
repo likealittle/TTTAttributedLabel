@@ -779,7 +779,7 @@ static inline NSAttributedString * NSAttributedStringBySettingColorFromContext(N
     if (self.attributedText && self.dataDetectorTypes) {
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             for( TFHppleElement *element in self.anchorTagElements ) {
-                NSRange range = [[text string] rangeOfString:[element content]];
+                NSRange range = [[self.attributedText string] rangeOfString:[element content]];
                 if( range.location != NSNotFound ) {
                     [self addLinkToURL:[NSURL URLWithString:element.attributes[@"href"]] withRange:range];
                 }
