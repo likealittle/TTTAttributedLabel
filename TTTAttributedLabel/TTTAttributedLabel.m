@@ -796,6 +796,9 @@ static inline NSAttributedString * NSAttributedStringBySettingColorFromContext(N
             }
         });
     }
+    else {
+        self.anchorTagElements = nil;
+    }
     
     [super setText:[self.attributedText string]];
 }
