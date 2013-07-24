@@ -257,8 +257,8 @@ static inline NSAttributedString * NSAttributedStringBySettingColorFromContext(N
     [mutableActiveLinkAttributes setObject:[NSNumber numberWithBool:NO] forKey:(NSString *)kCTUnderlineStyleAttributeName];
 
     if ([NSMutableParagraphStyle class]) {
-        [mutableLinkAttributes setObject:[UIColor blueColor] forKey:(NSString *)kCTForegroundColorAttributeName];
-        [mutableActiveLinkAttributes setObject:[UIColor redColor] forKey:(NSString *)kCTForegroundColorAttributeName];
+        [mutableLinkAttributes setObject:[UIColor whiteColor] forKey:(NSString *)kCTForegroundColorAttributeName];
+        [mutableActiveLinkAttributes setObject:[UIColor whiteColor] forKey:(NSString *)kCTForegroundColorAttributeName];
 
         NSMutableParagraphStyle *paragraphStyle = [[NSMutableParagraphStyle alloc] init];
         paragraphStyle.lineBreakMode = NSLineBreakByWordWrapping;
@@ -266,8 +266,8 @@ static inline NSAttributedString * NSAttributedStringBySettingColorFromContext(N
         [mutableLinkAttributes setObject:paragraphStyle forKey:(NSString *)kCTParagraphStyleAttributeName];
         [mutableActiveLinkAttributes setObject:paragraphStyle forKey:(NSString *)kCTParagraphStyleAttributeName];
     } else {
-        [mutableLinkAttributes setObject:(__bridge id)[[UIColor blueColor] CGColor] forKey:(NSString *)kCTForegroundColorAttributeName];
-        [mutableActiveLinkAttributes setObject:(__bridge id)[[UIColor redColor] CGColor] forKey:(NSString *)kCTForegroundColorAttributeName];
+        [mutableLinkAttributes setObject:(__bridge id)[[UIColor whiteColor] CGColor] forKey:(NSString *)kCTForegroundColorAttributeName];
+        [mutableActiveLinkAttributes setObject:(__bridge id)[[UIColor whiteColor] CGColor] forKey:(NSString *)kCTForegroundColorAttributeName];
 
         CTLineBreakMode lineBreakMode = CTLineBreakModeFromUILineBreakMode(UILineBreakModeWordWrap);
         CTParagraphStyleSetting paragraphStyles[1] = {
@@ -283,7 +283,6 @@ static inline NSAttributedString * NSAttributedStringBySettingColorFromContext(N
 	    
     self.linkAttributes = [NSDictionary dictionaryWithDictionary:mutableLinkAttributes];
     self.activeLinkAttributes = [NSDictionary dictionaryWithDictionary:mutableActiveLinkAttributes];
-    
 }
 
 - (void)dealloc {
