@@ -778,26 +778,35 @@ static inline NSAttributedString * NSAttributedStringBySettingColorFromContext(N
     self.links = [NSArray array];
     if (self.attributedText && self.dataDetectorTypes) {
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            NSMutableArray *rangesAlreadyHandled = [NSMutableArray array];
             for( TFHppleElement *element in self.anchorTagElements ) {
                 NSRange range = [[self.attributedText string] rangeOfString:[element content]];
                 if( range.location != NSNotFound ) {
                     [self addLinkToURL:[NSURL URLWithString:element.attributes[@"href"]] withRange:range];
+                    [rangesAlreadyHandled addObject:[NSValue valueWithRange:range]];
                 }
             }
-        });
-        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            
             NSArray *results = [self.dataDetector matchesInString:[text string] options:0 range:NSMakeRange(0, [text length])];
             if ([results count] > 0) {
                 dispatch_async(dispatch_get_main_queue(), ^{
                     if ([[self.attributedText string] isEqualToString:[text string]]) {
-                        [self addLinksWithTextCheckingResults:results attributes:self.linkAttributes];
+                        // Handle the case where the content of an a tag could be misinterpreted by the label as yet another URL
+                        NSMutableArray *uniqueResults = [NSMutableArray array];
+                        for( NSValue *rangeValueObject in rangesAlreadyHandled ) {
+                            for( NSTextCheckingResult *result in results ) {
+                                if( NSIntersectionRange(result.range, rangeValueObject.rangeValue).length == 0 ) {
+                                    [uniqueResults addObject:result];
+                                }
+                            }
+                        }
+                        if( uniqueResults.count ) {
+                            [self addLinksWithTextCheckingResults:uniqueResults attributes:self.linkAttributes];
+                        }
                     }
                 });
             }
         });
-    }
-    else {
-        self.anchorTagElements = nil;
     }
     
     [super setText:[self.attributedText string]];
