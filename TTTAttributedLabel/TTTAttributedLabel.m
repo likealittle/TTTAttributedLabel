@@ -791,11 +791,11 @@ static inline NSAttributedString * NSAttributedStringBySettingColorFromContext(N
                 dispatch_async(dispatch_get_main_queue(), ^{
                     if ([[self.attributedText string] isEqualToString:[text string]]) {
                         // Handle the case where the content of an a tag could be misinterpreted by the label as yet another URL
-                        NSMutableArray *uniqueResults = [NSMutableArray array];
+                        NSMutableArray *uniqueResults = [NSMutableArray arrayWithArray:results];
                         for( NSValue *rangeValueObject in rangesAlreadyHandled ) {
                             for( NSTextCheckingResult *result in results ) {
-                                if( NSIntersectionRange(result.range, rangeValueObject.rangeValue).length == 0 ) {
-                                    [uniqueResults addObject:result];
+                                if( NSIntersectionRange(result.range, rangeValueObject.rangeValue).length ) {
+                                    [uniqueResults removeObject:result];
                                 }
                             }
                         }
