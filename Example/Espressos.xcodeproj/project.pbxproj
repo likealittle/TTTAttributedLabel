@@ -7,6 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		A758CC6617A9A3DE0065E5BD /* TFHpple.m in Sources */ = {isa = PBXBuildFile; fileRef = A758CC6117A9A3DE0065E5BD /* TFHpple.m */; };
+		A758CC6717A9A3DE0065E5BD /* TFHppleElement.m in Sources */ = {isa = PBXBuildFile; fileRef = A758CC6317A9A3DE0065E5BD /* TFHppleElement.m */; };
+		A758CC6817A9A3DE0065E5BD /* XPathQuery.m in Sources */ = {isa = PBXBuildFile; fileRef = A758CC6517A9A3DE0065E5BD /* XPathQuery.m */; };
+		A758CC6A17A9A43A0065E5BD /* libxml2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = A758CC6917A9A43A0065E5BD /* libxml2.dylib */; };
 		F82DFABB16B837810095ECA8 /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = F82DFABA16B837810095ECA8 /* Default-568h@2x.png */; };
 		F877A36113782AF10022A8AB /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F877A36013782AF10022A8AB /* UIKit.framework */; };
 		F877A36313782AF10022A8AB /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F877A36213782AF10022A8AB /* Foundation.framework */; };
@@ -22,6 +26,13 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		A758CC6017A9A3DE0065E5BD /* TFHpple.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TFHpple.h; sourceTree = "<group>"; };
+		A758CC6117A9A3DE0065E5BD /* TFHpple.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TFHpple.m; sourceTree = "<group>"; };
+		A758CC6217A9A3DE0065E5BD /* TFHppleElement.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TFHppleElement.h; sourceTree = "<group>"; };
+		A758CC6317A9A3DE0065E5BD /* TFHppleElement.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TFHppleElement.m; sourceTree = "<group>"; };
+		A758CC6417A9A3DE0065E5BD /* XPathQuery.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XPathQuery.h; sourceTree = "<group>"; };
+		A758CC6517A9A3DE0065E5BD /* XPathQuery.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XPathQuery.m; sourceTree = "<group>"; };
+		A758CC6917A9A43A0065E5BD /* libxml2.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libxml2.dylib; path = usr/lib/libxml2.dylib; sourceTree = SDKROOT; };
 		F82DFABA16B837810095ECA8 /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-568h@2x.png"; sourceTree = "<group>"; };
 		F877A35C13782AF10022A8AB /* Espressos.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Espressos.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		F877A36013782AF10022A8AB /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
@@ -49,6 +60,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A758CC6A17A9A43A0065E5BD /* libxml2.dylib in Frameworks */,
 				F877A39513782FC10022A8AB /* CoreText.framework in Frameworks */,
 				F877A36113782AF10022A8AB /* UIKit.framework in Frameworks */,
 				F877A36313782AF10022A8AB /* Foundation.framework in Frameworks */,
@@ -59,6 +71,20 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		A758CC5F17A9A3DE0065E5BD /* TFHpple */ = {
+			isa = PBXGroup;
+			children = (
+				A758CC6017A9A3DE0065E5BD /* TFHpple.h */,
+				A758CC6117A9A3DE0065E5BD /* TFHpple.m */,
+				A758CC6217A9A3DE0065E5BD /* TFHppleElement.h */,
+				A758CC6317A9A3DE0065E5BD /* TFHppleElement.m */,
+				A758CC6417A9A3DE0065E5BD /* XPathQuery.h */,
+				A758CC6517A9A3DE0065E5BD /* XPathQuery.m */,
+			);
+			name = TFHpple;
+			path = ../TFHpple;
+			sourceTree = "<group>";
+		};
 		F877A35113782AF10022A8AB = {
 			isa = PBXGroup;
 			children = (
@@ -85,6 +111,7 @@
 				F877A36213782AF10022A8AB /* Foundation.framework */,
 				F877A36413782AF10022A8AB /* CoreGraphics.framework */,
 				F877A39413782FC10022A8AB /* CoreText.framework */,
+				A758CC6917A9A43A0065E5BD /* libxml2.dylib */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -136,6 +163,7 @@
 		F8C05ABC1657180F00B0ACDD /* Vendor */ = {
 			isa = PBXGroup;
 			children = (
+				A758CC5F17A9A3DE0065E5BD /* TFHpple */,
 				F8C05AC2165718E300B0ACDD /* TTTAttributedLabel */,
 			);
 			name = Vendor;
@@ -220,6 +248,9 @@
 				F8C05AAD1657171400B0ACDD /* DetailViewController.m in Sources */,
 				F8C05AAE1657171400B0ACDD /* RootViewController.m in Sources */,
 				F8C05AC5165718E300B0ACDD /* TTTAttributedLabel.m in Sources */,
+				A758CC6617A9A3DE0065E5BD /* TFHpple.m in Sources */,
+				A758CC6717A9A3DE0065E5BD /* TFHppleElement.m in Sources */,
+				A758CC6817A9A3DE0065E5BD /* XPathQuery.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -269,6 +300,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = Prefix.pch;
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				HEADER_SEARCH_PATHS = "\"${SDK_DIR}\"/usr/include/libxml2";
 				INFOPLIST_FILE = "$(SRCROOT)/Info.plist";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
@@ -286,6 +318,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = Prefix.pch;
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				HEADER_SEARCH_PATHS = "\"${SDK_DIR}\"/usr/include/libxml2";
 				INFOPLIST_FILE = "$(SRCROOT)/Info.plist";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";

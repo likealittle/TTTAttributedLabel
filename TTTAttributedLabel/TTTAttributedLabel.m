@@ -21,9 +21,7 @@
 // THE SOFTWARE.
 
 #import "TTTAttributedLabel.h"
-
 #import "TFHpple.h"
-#import "NSString+HTML.h"
 
 #define kTTTLineBreakWordWrapTextWidthScalingFactor (M_PI / M_E)
 
@@ -779,8 +777,9 @@ static inline NSAttributedString * NSAttributedStringBySettingColorFromContext(N
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             NSMutableArray *rangesAlreadyHandled = [NSMutableArray array];
             for( TFHppleElement *element in self.anchorTagElements ) {
-                NSRange range = [[self.attributedText string] rangeOfString:[element content]];
-                if( range.location != NSNotFound ) {
+                NSString *anchorText = [self anchorTextFromElement:element];
+                NSRange range = [[self.attributedText string] rangeOfString:anchorText];
+                if (range.length > 0) {
                     [self addLinkToURL:[NSURL URLWithString:element.attributes[@"href"]] withRange:range];
                     [rangesAlreadyHandled addObject:[NSValue valueWithRange:range]];
                 }
@@ -811,17 +810,19 @@ static inline NSAttributedString * NSAttributedStringBySettingColorFromContext(N
     [super setText:[self.attributedText string]];
 }
 
-- (void)setText:(id)text
-afterInheritingLabelAttributesAndConfiguringWithBlock:(NSMutableAttributedString *(^)(NSMutableAttributedString *mutableAttributedString))block
+- (void)setText:(id)text afterInheritingLabelAttributesAndConfiguringWithBlock:(NSMutableAttributedString *(^)(NSMutableAttributedString *mutableAttributedString))block
 {
     NSMutableAttributedString *mutableAttributedString = nil;
     if ([text isKindOfClass:[NSString class]]) {
         // Remove all anchor tags and enqueue them for attribution later
-        NSString *string = text;
-        TFHpple *parser = [TFHpple hppleWithHTMLData:[string dataUsingEncoding:NSUTF8StringEncoding]];
+        TFHpple *parser = [TFHpple hppleWithHTMLData:[text dataUsingEncoding:NSUTF8StringEncoding]];
         self.anchorTagElements = [parser searchWithXPathQuery:@"//a"];
-        text = [NSString stringByStrippingHTML:text];
         
+        if (self.anchorTagElements.count > 0) {
+            NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:@"<a[^>]*>" options:NSRegularExpressionCaseInsensitive error:NULL];
+            text = [regex stringByReplacingMatchesInString:text options:0 range:NSMakeRange(0, [text length]) withTemplate:@""];
+            text = [text stringByReplacingOccurrencesOfString:@"</a>" withString:@""];
+        }
         mutableAttributedString = [[NSMutableAttributedString alloc] initWithString:text attributes:NSAttributedStringAttributesFromLabel(self)];
     } else {
         mutableAttributedString = [[NSMutableAttributedString alloc] initWithAttributedString:text];
@@ -854,6 +855,14 @@ afterInheritingLabelAttributesAndConfiguringWithBlock:(NSMutableAttributedString
 
         [self setNeedsDisplay];
     }
+}
+
+- (NSString *)anchorTextFromElement:(TFHppleElement *)element {
+    NSString *url = element.text;
+    if (!url) url = element.content;
+    if (!url) url = element.attributes[@"href"];
+    if (!url) url = @"";
+    return url;
 }
 
 #pragma mark - UILabel
